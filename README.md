@@ -1,2 +1,3 @@
-# Ticketing-Email-Threading-System
-SQLite → stores tickets + messages  Redis Streams → background job queue  Worker services → process and send emails  Email SMTP library → send emails  Email threading → manage “reply to this ticket ID”  Webhook listener → receive replies and attach to ticket
+# Ticket support Email Threading
+
+The Email Threading System uses SQLite as the primary datastore for tickets and their associated messages. Redis Streams serves as the background job queue for asynchronous processing. Dedicated worker services consume queued jobs, generate outbound email content, and dispatch messages through an SMTP email library. The system implements email threading by embedding unique ticket identifiers that allow incoming replies to be mapped to the correct ticket. A webhook listener receives inbound email events, extracts the ticket reference, and appends the reply message to the appropriate ticket record in SQLite.
