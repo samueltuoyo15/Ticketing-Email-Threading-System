@@ -3,6 +3,8 @@ package db
 import (
 	"database/sql"
 	"fmt"
+
+	"github.com/google/uuid"
 )
 
 type Repository interface {
@@ -25,17 +27,15 @@ func NewSqlLiteRepository(db *sql.DB) *SqlLiteRepository {
 
 // Tickets
 func (repo *SqlLiteRepository) CreateTicket(ticket *Ticket) error {
-	result, err := repo.db.Exec(`INSERT INTO tickets (subject, status, created_at, updated_at) VALUES (?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`, ticket.Subject, ticket.Status)
-
-	if err != nil {
-		return err
+	if ticket.ID == "" {
+		ticket.ID = uuid.New().String()
 	}
 
-	id, err := result.LastInsertId()
+	_, err := repo.db.Exec(`INSERT INTO tickets (id, subject, status, created_at, updated_at) VALUES (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`, ticket.ID, ticket.Subject, ticket.Status)
+
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to create ticket: %w", err)
 	}
 
-	ticket.ID = fmt.Sprintf("%d", id)
 	return nil
 }
