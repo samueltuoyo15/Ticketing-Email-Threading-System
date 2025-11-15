@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS tickets (
+ id UUID PRIMARY KEY,
+ subject TEXT NOT NULL,
+ status TEXT NOT NULL CHECK(status IN('open', 'closed', 'resolved')
+ created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+ updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+)
